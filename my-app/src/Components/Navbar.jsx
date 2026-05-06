@@ -13,9 +13,6 @@ const Navbar = () => {
                 <Link to='/' className='no-underline text-[#3A1212] text-[24px] font-bold'>Home</Link>
                 <a href='#exercises' className='no-underline text-[#3A1212] text-[24px] font-bold'>Exercises</a>
             </div>
-            <div className='flex'>
-                <Link to='/exercise' className='no-underline text-[#3A1212] text-[24px] font-bold'>Exercises</Link>
-            </div>
         </div>
     )
 }

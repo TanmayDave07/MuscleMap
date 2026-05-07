@@ -19,17 +19,26 @@ const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
 
     const handleSearch = async () => {
         if(search){
-            const exerciseData = await fetchData('https://exercisedb.p.rapidapi.com/exercises', exerciseOptions);
+            try {
+                const exerciseData = await fetchData('https://exercisedb.p.rapidapi.com/exercises?limit=0', exerciseOptions);
 
-            const searchedExercises = exerciseData.filter((exercise) => 
-                exercise.name.toLowerCase().includes(search) 
-                || exercise.target.toLowerCase().includes(search) 
-                || exercise.equipment.toLowerCase().includes(search) 
-                || exercise.bodyPart.toLowerCase().includes(search)
-            );
+                if (!Array.isArray(exerciseData)) {
+                    console.error('API returned non-array response:', exerciseData);
+                    return;
+                }
 
-            setSearch('');
-            setExercises(searchedExercises);
+                const searchedExercises = exerciseData.filter((exercise) => 
+                    exercise.name.toLowerCase().includes(search) 
+                    || exercise.target.toLowerCase().includes(search) 
+                    || exercise.equipment.toLowerCase().includes(search) 
+                    || exercise.bodyPart.toLowerCase().includes(search)
+                );
+
+                setSearch('');
+                setExercises(searchedExercises);
+            } catch (error) {
+                console.error('Error searching exercises:', error);
+            }
         }
     }
 
@@ -54,7 +63,7 @@ const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
                 </button>
             </div>
             <div className="relative w-full p-[20px]">
-                <HorizontalScrollbar data={bodyParts} bodyPart={bodyPart} setBodyPart={setBodyPart}/>
+                <HorizontalScrollbar data={bodyParts} bodyParts bodyPart={bodyPart} setBodyPart={setBodyPart}/>
             </div>
         </div>
     )

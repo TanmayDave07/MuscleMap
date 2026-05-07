@@ -3,9 +3,16 @@ import React from 'react';
 import BodyPartImage from '../assets/icons/body-part.png';
 import TargetImage from '../assets/icons/target.png';
 import EquipmentImage from '../assets/icons/equipment.png';
+import { exerciseOptions } from '../utils/fetchData';
 
 const Detail = ({ exerciseDetail }) => {
-  const { bodyPart, gifUrl, name, target, equipment } = exerciseDetail;
+  const { bodyPart, id, name, target, equipment } = exerciseDetail;
+
+  // Use the /image endpoint which streams the GIF directly with our API key.
+  // The gifUrl from the API response uses signed/expiring URLs that often break.
+  const gifSrc = id
+    ? `https://exercisedb.p.rapidapi.com/image?exerciseId=${id}&resolution=360&rapidapi-key=${exerciseOptions.headers['x-rapidapi-key']}`
+    : '';
 
   const extraDetail = [
     {
@@ -24,7 +31,7 @@ const Detail = ({ exerciseDetail }) => {
 
   return (
     <div className="flex flex-col lg:flex-row gap-[60px] p-5 items-center">
-      <img src={gifUrl} alt={name} loading="lazy" className="detail-image" />
+      {gifSrc && <img src={gifSrc} alt={name} loading="lazy" className="detail-image" />}
       <div className="flex flex-col gap-5 lg:gap-[35px]">
         <h1 className="text-[30px] lg:text-[64px] font-bold capitalize">
           {name}

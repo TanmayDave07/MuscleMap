@@ -3,16 +3,29 @@ import { exerciseOptions, fetchData } from '../utils/fetchData'
 import ExerciseCard from './ExerciseCard'
 
 const Exercises = ({ exercises, setExercises, bodyPart }) => {
+    const isInitialMount = React.useRef(true);
+
     useEffect(() => {
+        if (isInitialMount.current) {
+            isInitialMount.current = false;
+            if (exercises.length > 0) return;
+        }
+
         const fetchExercisesData = async () => {
             let exercisesData = [];
 
-            if (bodyPart === 'all') {
-                exercisesData = await fetchData('https://exercisedb.p.rapidapi.com/exercises', exerciseOptions);
-            } else {
-                exercisesData = await fetchData(`https://exercisedb.p.rapidapi.com/exercises/bodyPart/${bodyPart}`, exerciseOptions);
+            try {
+                if (bodyPart === 'all') {
+                    exercisesData = await fetchData('https://exercisedb.p.rapidapi.com/exercises?limit=100', exerciseOptions);
+                } else {
+                    exercisesData = await fetchData(`https://exercisedb.p.rapidapi.com/exercises/bodyPart/${bodyPart}?limit=100`, exerciseOptions);
+                }
+                if (Array.isArray(exercisesData)) {
+                    setExercises(exercisesData);
+                }
+            } catch (error) {
+                console.error('Error fetching exercises:', error);
             }
-            setExercises(exercisesData);
         }
         fetchExercisesData();
     }, [bodyPart])
